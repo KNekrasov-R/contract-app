@@ -26,7 +26,7 @@ A Spring Boot application for managing contracts, generating and storing contrac
 1. **Clone the repository:**
    ```sh
    git clone <repo-url>
-   cd Athen
+   cd contract-app
    ```
 2. **Build the project:**
    ```sh
@@ -81,6 +81,6 @@ file: <PDF file>
 
 ## TODO
 - Add support for cloud provider deployment
-- Add support for different databases (e.g., PostgreSQL)
-- Provide support for Word file generation and upload
+- Add support for more templates
+- Provide support for Word file generation
 
