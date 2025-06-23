@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать договор</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>body { padding: 2rem; }</style>
+</head>
+<body>
+<div class="container">
+    <h2 class="mb-4">Создать договор подряда</h2>
+    <div id="alerts"></div>
+    <form id="contractForm">
+        <div class="mb-3">
+            <label class="form-label">Наименование юридических лиц</label>
+            <input type="text" class="form-control" name="contractorName" maxlength="512" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">ИНН/ОГРН/адрес</label>
+            <textarea class="form-control" name="contractorDetails" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Сроки + Цена + порядок оплаты</label>
+            <textarea class="form-control" name="termsPricePayment" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Банковские реквизиты подрядчика</label>
+            <textarea class="form-control" name="paymentRequisites" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Гарантийные обязательства</label>
+            <textarea class="form-control" name="warranty" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Контакты, имена подписантов</label>
+            <textarea class="form-control" name="partiesContacts" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Номер и дата договора</label>
+            <input type="text" class="form-control" name="contractNumberDate" maxlength="128" required>
+        </div>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Сохранить</button>
+        <button type="button" class="btn btn-success" id="renderBtn">Сохранить и скачать PDF</button>
+    </form>
+</div>
+<script>
+    const form = document.getElementById('contractForm');
+    const saveBtn = document.getElementById('saveBtn');
+    const renderBtn = document.getElementById('renderBtn');
+    let renderMode = false;
+
+    saveBtn.addEventListener('click', function(e) {
+        renderMode = false;
+    });
+    renderBtn.addEventListener('click', async function(e) {
+        renderMode = true;
+        form.dispatchEvent(new Event('submit', {cancelable: true, bubbles: true}));
+    });
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        document.getElementById('alerts').innerHTML = '';
+        const data = Object.fromEntries(new FormData(form).entries());
+        try {
+            if (renderMode) {
+                const resp = await fetch('/contract/render', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (resp.ok) {
+                    const blob = await resp.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'contract.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    window.location.href = '/contracts';
+                } else {
+                    document.getElementById('alerts').innerHTML = `<div class='alert alert-danger'>Ошибка сервера</div>`;
+                }
+            } else {
+                const resp = await fetch('/contract/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (resp.status === 302 || resp.status === 201 || resp.redirected) {
+                    window.location.href = '/contracts';
+                } else {
+                    document.getElementById('alerts').innerHTML = `<div class='alert alert-danger'>Ошибка сервера</div>`;
+                }
+            }
+        } catch (err) {
+            document.getElementById('alerts').innerHTML = `<div class='alert alert-danger'>Ошибка сети</div>`;
+        }
+    });
+</script>
+</body>
+</html>

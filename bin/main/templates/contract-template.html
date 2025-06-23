@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Договор подряда</title>
+    <style>
+        body { font-family: 'DejaVu Sans', DejaVuSans, Arial, sans-serif; }
+        h1 { text-align: center; }
+        .section { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<h1>ДОГОВОР ПОДРЯДА № <span th:text="${contract.contractNumberDate}">___</span></h1>
+<p>г. Москва, "___" __________ 20__ г.</p>
+
+<div class="section">
+    <b>1. Стороны договора</b><br/>
+    Заказчик: ООО "СОЛНЕЧНАЯ ДОЛИНА"<br/>
+    Подрядчик: <span th:text="${contract.contractorName}">___</span><br/>
+    ИНН/ОГРН/адрес: <span th:text="${contract.contractorDetails}">___</span>
+</div>
+
+<div class="section">
+    <b>2. Предмет договора</b><br/>
+    Подрядчик обязуется выполнить работы, а Заказчик — принять и оплатить их на условиях настоящего договора.
+</div>
+
+<div class="section">
+    <b>3. Цена и порядок оплаты</b><br/>
+    <span th:text="${contract.termsPricePayment}">___</span>
+</div>
+
+<div class="section">
+    <b>4. Банковские реквизиты подрядчика</b><br/>
+    <span th:text="${contract.paymentRequisites}">___</span>
+</div>
+
+<div class="section">
+    <b>5. Гарантийные обязательства</b><br/>
+    <span th:text="${contract.warranty}">___</span>
+</div>
+
+<div class="section">
+    <b>6. Контакты и подписанты</b><br/>
+    <span th:text="${contract.partiesContacts}">___</span>
+</div>
+
+<div class="section">
+    <b>7. Прочие условия</b><br/>
+    Настоящий договор составлен в двух экземплярах, имеющих равную юридическую силу.
+</div>
+
+<p>Подписи сторон:</p>
+<table width="100%">
+    <tr>
+        <td>Заказчик: ООО "СОЛНЕЧНАЯ ДОЛИНА"</td>
+        <td>Подрядчик: <span th:text="${contract.contractorName}">___</span></td>
+    </tr>
+</table>
+</body>
+</html> 
